@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bus Route Finder</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="header">
+      <h1>Possible paths</h1>
+    </div>
+    <h2>Click for more information</h2>
+    <table>
+      <tr>
+        <th>Service</th>
+        <th>Path</th>
+        <th>Distance/km</th>
+      </tr>
+      {% for result in ui.results %}
+      <tr class="result">
+        <td
+          onclick="window.location='{{ result.get_path_url() }}'"
+          class="row-link"
+        >
+          {{ result.get_service_readable() }}
+        </td>
+        <td
+          onclick="window.location='{{ result.get_path_url() }}'"
+          tabindex="-1"
+          class="row-link"
+        >
+          {{ result.get_path_readable() }}
+        </td>
+        <td
+          onclick="window.location='{{ result.get_path_url() }}'"
+          tabindex="-1"
+          class="row-link"
+        >
+          {{ result.get_distance_readable() }}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>

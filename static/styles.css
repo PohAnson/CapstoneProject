@@ -1,0 +1,122 @@
+html {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0px;
+}
+h1 {
+  text-align: center;
+  font-size: max(30px, 7vw);
+  font-weight: 400;
+  margin-top: 25px;
+}
+div.header {
+  padding: 0px 0px 2.5vw;
+  background-color: #def3fd;
+  width: 100vw;
+  text-align: center;
+  margin-bottom: 20px;
+}
+form {
+  display: table;
+}
+.row {
+  display: table-row;
+  margin-bottom: 10px;
+  /* text-align: center; */
+}
+.field_heading {
+  display: table-cell;
+  padding: 10px 10px;
+  /* text-align: right; */
+}
+input {
+  display: table-cell;
+  border-radius: 5px;
+  padding: 3px;
+  min-width: 20vw;
+}
+label {
+  padding-right: 15px;
+  padding-left: 5px;
+  /* font-size: 1.2em; */
+}
+input[type="radio"] {
+  padding-right: 10px;
+  padding-left: 25px;
+  min-width: 5px;
+  /* height: 1.2em; */
+}
+
+.error_msg {
+  color: red;
+  display: inline;
+  margin-left: 10px;
+}
+th {
+  font-size: 1.3em;
+}
+table,
+th,
+td {
+  border: 2px solid black;
+  border-collapse: collapse;
+  padding: 10px 15px;
+  margin: 25px;
+}
+tr.result:hover,
+tr.result:focus-within {
+  background: #f2f3ff;
+}
+
+.show {
+  display: block;
+  flex-direction: column;
+}
+div.o {
+  /* display: flex;
+  flex-direction: column; */
+  margin: 1px 0px;
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  padding-left: 10px;
+}
+p.o {
+  margin: 8px 0px 2px;
+  font-weight: 700;
+}
+
+span.o {
+  color: rgb(110, 110, 110);
+}
+
+select {
+  margin: 0px;
+  width: 50vw;
+  height: 40vh;
+  overflow: auto;
+  display: none;
+  /* font-size: 12px; */
+}
+
+*[class^="bus-stop-"] {
+  margin: 0px;
+}
+.bus-stop-list {
+  display: flex;
+  flex-direction: column;
+}
+div.bus-stop-list {
+  margin: 10px 0px;
+}
+.bus-stop-description {
+  font-weight: bold;
+  font-size: 1.5em;
+}
+.bus-stop-road-name {
+  font-size: 1.2em;
+  color: rgb(107, 107, 107);
+}
