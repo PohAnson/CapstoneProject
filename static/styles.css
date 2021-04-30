@@ -9,7 +9,6 @@ body {
 }
 h1 {
   text-align: center;
-  font-size: max(30px, 7vw);
   font-weight: 400;
   margin-top: 25px;
 }
@@ -20,18 +19,16 @@ div.header {
   text-align: center;
   margin-bottom: 20px;
 }
-form {
+div.form-table {
   display: table;
 }
 .row {
   display: table-row;
   margin-bottom: 10px;
-  /* text-align: center; */
 }
 .field_heading {
   display: table-cell;
   padding: 10px 10px;
-  /* text-align: right; */
 }
 input {
   display: table-cell;
@@ -42,22 +39,11 @@ input {
 label {
   padding-right: 15px;
   padding-left: 5px;
-  /* font-size: 1.2em; */
 }
 input[type="radio"] {
   padding-right: 10px;
   padding-left: 25px;
   min-width: 5px;
-  /* height: 1.2em; */
-}
-
-.error_msg {
-  color: red;
-  display: inline;
-  margin-left: 10px;
-}
-th {
-  font-size: 1.3em;
 }
 table,
 th,
@@ -67,18 +53,48 @@ td {
   padding: 10px 15px;
   margin: 25px;
 }
+
 tr.result:hover,
 tr.result:focus-within {
   background: #f2f3ff;
 }
+
+select {
+  margin: 0px;
+  width: 50vw;
+  height: 40vh;
+  overflow: auto;
+  display: none;
+}
+/* input[type="submit"] */
+ .button {
+  display: inline-block;
+  padding: 8px;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  border: 0px;
+  min-width: 6vw
+}
+.button:hover{
+  background-color: #0253aa;
+  color: white;
+}
+
+
+.error_msg {
+  color: red;
+  display: inline;
+  margin-left: 10px;
+}
+
+
 
 .show {
   display: block;
   flex-direction: column;
 }
 div.o {
-  /* display: flex;
-  flex-direction: column; */
   margin: 1px 0px;
   border-top: 1px solid black;
   border-left: 1px solid black;
@@ -93,15 +109,6 @@ span.o {
   color: rgb(110, 110, 110);
 }
 
-select {
-  margin: 0px;
-  width: 50vw;
-  height: 40vh;
-  overflow: auto;
-  display: none;
-  /* font-size: 12px; */
-}
-
 *[class^="bus-stop-"] {
   margin: 0px;
 }
@@ -114,9 +121,7 @@ div.bus-stop-list {
 }
 .bus-stop-description {
   font-weight: bold;
-  font-size: 1.5em;
 }
 .bus-stop-road-name {
-  font-size: 1.2em;
   color: rgb(107, 107, 107);
 }

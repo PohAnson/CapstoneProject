@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bus Route Finder</title>
     <link rel="stylesheet" href="/static/styles.css" />
-    <script src="https://cdn.jsdelivr.net/npm/minisearch@3.0.2/dist/umd/index.min.js"></script>
+    <script src="/static/js/MiniSearch.js"></script>
     <script src="/static/js/index.js"></script>
   </head>
   <body>
@@ -19,48 +19,50 @@
     <p style="color: red; font-size: large"><b>{{ ui.error_message }}</b></p>
 
     <form id="form" action="/processing" method="POST">
-      <div class="row">
-        <label class="field_heading" for="start_stop_code"
-          >Starting Bus Stop:</label
-        >
-        <input
-          id="start_stop_code"
-          name="start_stop_code"
-          onblur="showCode('start_stop_code')"
-        />
-        <p style="display: inline; padding-left: 10px"></p>
+      <div class="form-table">
+        <div class="row">
+          <label class="field_heading" for="start_stop_code"
+            >Starting Bus Stop Code:</label
+          >
+          <input
+            id="start_stop_code"
+            name="start_stop_code"
+            onblur="showCode('start_stop_code')"
+          />
+          <p style="display: inline; padding-left: 10px"></p>
+        </div>
+        <div class="row">
+          <label class="field_heading" for="end_stop_code"
+            >Ending Bus Stop Code:</label
+          >
+          <input
+            id="end_stop_code"
+            name="end_stop_code"
+            onblur="showCode('end_stop_code')"
+          />
+          <p style="display: inline; padding-left: 10px"></p>
+        </div>
+        <br />
+        <div class="row">
+          <p class="field_heading">Criteria:</p>
+          <input
+            type="radio"
+            name="criteria"
+            id="least_transfer"
+            value="transfer"
+          /><label for="least_transfer">Least Transfer</label
+          ><input
+            type="radio"
+            name="criteria"
+            id="least_distance"
+            value="dist"
+            required
+          /><label for="least_distance">Least Distance</label>
+        </div>
+        <br />
       </div>
-      <div class="row">
-        <label class="field_heading" for="end_stop_code"
-          >Ending Bus Stop:</label
-        >
-        <input
-          id="end_stop_code"
-          name="end_stop_code"
-          onblur="showCode('end_stop_code')"
-        />
-        <p style="display: inline; padding-left: 10px"></p>
-      </div>
-      <br />
-      <div class="row">
-        <p class="field_heading">Criteria:</p>
-        <input
-          type="radio"
-          name="criteria"
-          id="least_transfer"
-          value="transfer"
-        /><label for="least_transfer">Least Transfer</label
-        ><input
-          type="radio"
-          name="criteria"
-          id="least_distance"
-          value="dist"
-          required
-        /><label for="least_distance">Least Distance</label>
-      </div>
-      <br />
-      <div class="row">
-        <input type="submit" value="Search" style="min-width: 6vw" />
+      <div style="display: flex; justify-content: center; padding-top: 10px">
+        <input class="button" type="submit" value="Search" />
       </div>
     </form>
   </body>
