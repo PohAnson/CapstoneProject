@@ -219,7 +219,6 @@ class PathsResult:
         self.services = services
         self.path = path
         self.distance = distance
-        print(type(self.distance))
 
     def __repr__(self):
         return f"PathsResult({self.services}, {self.path}, {self.distance})"
