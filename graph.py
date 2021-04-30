@@ -7,15 +7,26 @@ import bus_utils as bu
 from datastore.sqlcmds import SQLcmds
 from config import graph_path
 
-
+###############################################################################
+################################# Graph Class #################################
+###############################################################################
 class Graph:
     """
     Graph of connection between bus stop using their code.
 
-    Graph is stored similar to an adjacency list.
-    1. Breadth-First Search.
-    1. Each stop to be connected to all possible stop that the bus there can go
-    1. (i.e. 1st bus stop of bus 123 is connected to 2nd, 3rd, 4th ... bus stop)
+    Attributes:
+
+        - graph (dict): Stored similar to an adjacency list. Each stop is connected to all possible stop that can be reached directly.
+
+
+
+    Methods:
+        
+        - insert(origin_stop_code, end_stop_code): Insert an edge into graph.
+        - create_graph([cache]): Create graph, and store it as an attribute
+        - serialise(fp): Serialise it as json in a file
+        - deserialise(fp): deserialise data from a file
+        - search_path(start, end): find a possible path 
     """
 
     def __init__(self):
@@ -34,7 +45,7 @@ class Graph:
     def __str__(self):
         return str(self.graph)
 
-    def insert(self, origin_bus_stop_code, end_bus_stop_code):
+    def insert(self, origin_stop_code, end_stop_code):
         """
         Insert an edge into the graph.
 
@@ -42,10 +53,10 @@ class Graph:
             origin_bus_stop_code (str): starting bus stop code
             end_bus_stop_code (str): ending bus stop code
         """
-        if origin_bus_stop_code not in self.graph:
-            self.graph[origin_bus_stop_code] = [end_bus_stop_code]
+        if origin_stop_code not in self.graph:
+            self.graph[origin_stop_code] = [end_stop_code]
         else:
-            self.graph[origin_bus_stop_code].append(end_bus_stop_code)
+            self.graph[origin_stop_code].append(end_stop_code)
 
     def create_graph(self, cache=True):
         """

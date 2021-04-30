@@ -4,16 +4,37 @@ import datastore as ds
 import bus_utils as bu
 from datastore import SQLcmds
 
+###############################################################################
+############################# WebInterface Class ##############################
+###############################################################################
+
 
 class WebInterface:
     """To help with storing and giving formatted data.
 
     Attributes:
-        - error_message
-        - status
-        - results
-        - detailed_results
-        - status_done
+
+        + error_message (str): 
+        + main_status (str): 
+        + sub_status (str): 
+        + results (list): 
+        + detailed_results (list): 
+        + status_done (bool): 
+
+    Methods:
+
+        + get_status(main_status): Return the status message.
+        + set_status(status, [main_status]): Update the status.
+        + clear_status(): Clear all status message.
+        + get_error_message(): Returns the error message.
+        + set_error_message(error): Update the error message. 
+        + clear_error_message(): Clear all error message.
+        + get_result_table(): Return the results.
+        + set_result_table(datas, [summarise]): Set the results table.
+        + get_detailed_path_results(): Get results for the details of a path.
+        + set_detailed_path_results(paths): Set results for the path's details.
+        + clear_detailed_path_results(): Clear all results for path details.
+        + jsonify(): Return the json response of relevant datas.
     """
 
     def __init__(self):
@@ -80,7 +101,7 @@ class WebInterface:
         """Return the results.
 
         Returns:
-            list: contains Result object
+            list: contains PathsResult object
         """
         return self.results
 
@@ -105,7 +126,8 @@ class WebInterface:
                 partial_summary = {}
                 summary = {}
                 for result in results:
-                    partial_summary[(tuple(result["sn"]), str(["dist"]))] = result
+                    partial_summary[(tuple(result["sn"]),
+                                     str(["dist"]))] = result
                 for item in partial_summary.values():
                     summary[(str(item["dist"]), tuple(item["path"]))] = item
                 return summary.values()
@@ -113,7 +135,7 @@ class WebInterface:
             datas = summarise_results(datas)
 
         self.results = [
-            Result(data["sn"], data["path"], data["dist"]) for data in datas
+            PathsResult(data["sn"], data["path"], data["dist"]) for data in datas
         ]
         self.status_done = True
 
@@ -146,7 +168,8 @@ class WebInterface:
                 services[i].add((path["sn"][i]))
 
         for i in range(path_len - 1):
-            self.detailed_results.append(DetailedPathResult(services[i], path_list[i]))
+            self.detailed_results.append(
+                DetailedPathResult(services[i], path_list[i]))
         # include the ending stop
         self.detailed_results.append(DetailedPathResult([], path_list[-1]))
 
@@ -155,7 +178,7 @@ class WebInterface:
         self.detailed_results = []
 
     def jsonify(self):
-        """Return json of relevant datas.
+        """Return json response of relevant datas.
 
         Returns:
             Json: Contains key(error_message, status, status_done)
@@ -169,24 +192,37 @@ class WebInterface:
             }
         )
 
+###############################################################################
+############################## PathsResult Class ##############################
+###############################################################################
 
-class Result:
+
+class PathsResult:
     """
     To help with storing and formatting individual results.
 
     Attributes:
-        - services
-        - path
-        - distance
+
+        + services (list): Contain the tuple (service_no, direction)
+        + path (list): The bus stops path
+        + distance (float): Total distance of the path
+
+    Methods:
+
+        + get_path_url(): Convert path to unique url
+        + get_path_readable(): Convert path to readable format.
+        + get_service_readable(): Convert service to a readable format.
+        + get_distance_readable(): Convert distance to a readable format.
     """
 
     def __init__(self, services, path, distance):
         self.services = services
         self.path = path
         self.distance = distance
+        print(type(self.distance))
 
     def __repr__(self):
-        return f"Result({self.services}, {self.path}, {self.distance})"
+        return f"PathsResult({self.services}, {self.path}, {self.distance})"
 
     def get_path_url(self):
         """Convert path to a unique url path.
@@ -223,15 +259,27 @@ class Result:
         """
         return str(self.distance)
 
+###############################################################################
+########################### DetailedPathResult Class ##########################
+###############################################################################
+
 
 class DetailedPathResult:
     """To help with the storing of individual detailed results.
 
     Attributes:
-        - services
-        - bus_stop (str): bus stop code
-        - road_name (str)
-        - road_description (str):
+
+        + services (list): service number
+        + bus_stop (str): bus stop code
+        + road_name (str): road name of the stop
+        + road_description (str): description of the stop
+
+    Methods:
+
+        + get_service_readable(): Convert the bus service to a readable format.
+        + get_bus_stop_readable(): Convert the bus stop to a readable format.
+        + get_road_description_readable(): Convert the road description to a readable format
+        + get_road_name_readable(): Convert the road name to a readable format.
     """
 
     def __init__(self, services, bus_stop):
