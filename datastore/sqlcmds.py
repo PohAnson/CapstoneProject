@@ -18,7 +18,8 @@ SQLcmds = {
         "stop_sequence" INTEGER,
         "bus_stop_code" TEXT,
         "distance" REAL,
-        PRIMARY KEY ("service_no", "direction", "stop_sequence")
+        PRIMARY KEY ("service_no", "direction", "stop_sequence"),
+        FOREIGN KEY ("bus_stop_code") REFERENCES "bus_stops"("bus_stop_code")
     );
 """,
     "insert_bus_stops": """

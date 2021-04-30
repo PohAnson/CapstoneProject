@@ -60,6 +60,8 @@ def read_bus_routes(filepath):
 if __name__ == "__main__":
     import datastore as ds
     from datastore.sqlcmds import SQLcmds
+    ds.execute('Drop table "bus_stops";')
+    ds.execute('drop table "bus_routes"')
 
     ds.execute(SQLcmds["create_bus_stops_table"])
     ds.execute(SQLcmds["create_bus_routes_table"])
