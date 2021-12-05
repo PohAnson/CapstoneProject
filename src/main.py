@@ -1,5 +1,6 @@
 """File to start the flask app."""
-from flask import Flask, render_template, request, redirect, session, jsonify
+from threading import Thread
+from flask import Flask, render_template, request, jsonify
 import bus_utils as bu
 from graph import Graph
 from webui import WebInterface
@@ -14,7 +15,6 @@ app.secret_key = "098765456789"
 CORS(app)
 
 ui = WebInterface()
-all_results = []
 
 
 @app.route("/")
@@ -34,16 +34,7 @@ def processing():
     end_stop_code = request.form.get("end_stop_code", None)
     criteria = request.form.get("criteria", None)
 
-    if None in (start_stop_code, end_stop_code, criteria):
-        ui.set_error_message("There is no input for starting stop code")
-        return redirect("/")
-    elif not validate_stops(start_stop_code, end_stop_code):
-        ui.set_error_message("Invalid bus stop code is given")
-        return redirect("/")
-
-    session["start_stop_code"] = start_stop_code
-    session["end_stop_code"] = end_stop_code
-    session["criteria"] = criteria
+    Thread(target=finding_path, args=req.to_find_path()).start()
 
     return render_template(
         "processing.html",
@@ -51,16 +42,10 @@ def processing():
     )
 
 
-@app.route("/finding_path")
-def finding_path():
+def finding_path(start_stop_code,
+                 end_stop_code,
+                 criteria):
     """Find path, redirects to results when finished."""
-    global all_results
-
-    all_results = []
-    ui.clear_status()
-    start_stop_code = request.args.get("start_stop_code", session["start_stop_code"])
-    end_stop_code = request.args.get("end_stop_code", session["end_stop_code"])
-    criteria = request.args.get("criteria", session["criteria"])
 
     graph = Graph()
     process_status.set_status("Creating bus routes graph", main_status=True)
@@ -71,6 +56,7 @@ def finding_path():
     paths_summary = sort_paths(
         path_lists, criteria, process_status=process_status)
 
+    ui.set_paths_summary(paths_summary, summarise=True)
     process_status.status_done = True
 
 
