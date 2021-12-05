@@ -7,6 +7,7 @@ from validation import validate_stops
 from pathfinding import sort_paths, search_path
 from flask_cors import CORS
 from config import host, port
+from webui import ProcessStatus, WebInterface
 
 app = Flask(__name__)
 app.secret_key = "098765456789"
@@ -25,7 +26,8 @@ def root():
 @app.route("/processing", methods=["POST"])
 def processing():
     """Return a processing page, to show progress updated from the api."""
-    ui.status_done = False
+    global process_status
+    process_status = ProcessStatus()
     ui.clear_error_message()
 
     start_stop_code = request.form.get("start_stop_code", None)
@@ -61,16 +63,15 @@ def finding_path():
     criteria = request.args.get("criteria", session["criteria"])
 
     graph = Graph()
-    ui.set_status("Creating bus routes graph", main_status=True)
+    process_status.set_status("Creating bus routes graph", main_status=True)
     graph.create_graph()
 
-    path_lists = search_path(start_stop_code, end_stop_code, graph, ui=ui)
-    all_results = sort_paths(path_lists, criteria, ui=ui)
+    path_lists = search_path(
+        start_stop_code, end_stop_code, graph, process_status=process_status)
+    paths_summary = sort_paths(
+        path_lists, criteria, process_status=process_status)
 
-    ui.set_result_table(all_results, summarise=True)
-    ui.clear_status()
-    ui.status_done = True
-    return redirect("/results")
+    process_status.status_done = True
 
 
 @app.route("/paths_summary")
@@ -109,7 +110,7 @@ def path_info():
 @app.route("/api/v1/status")
 def status():
     """To return status of the run."""
-    return ui.jsonify()
+    return process_status.jsonify()
 
 
 @app.route("/api/v1/allbusstopinfo")

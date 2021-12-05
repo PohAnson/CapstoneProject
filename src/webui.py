@@ -15,17 +15,11 @@ class WebInterface:
     Attributes:
 
         + error_message (str): 
-        + main_status (str): 
-        + sub_status (str): 
         + results (list): 
         + detailed_results (list): 
-        + status_done (bool): 
 
     Methods:
 
-        + get_status(main_status): Return the status message.
-        + set_status(status, [main_status]): Update the status.
-        + clear_status(): Clear all status message.
         + get_error_message(): Returns the error message.
         + set_error_message(error): Update the error message. 
         + clear_error_message(): Clear all error message.
@@ -34,48 +28,15 @@ class WebInterface:
         + get_detailed_path_results(): Get results for the details of a path.
         + set_detailed_path_results(paths): Set results for the path's details.
         + clear_detailed_path_results(): Clear all results for path details.
-        + jsonify(): Return the json response of relevant datas.
     """
 
     def __init__(self):
         self.error_message = ""
-        self.main_status = ""
-        self.sub_status = ""
         self.results = []
         self.detailed_results = []
-        self.status_done = False
 
     def __repr__(self):
-        return f"WebInterface(error_message={self.error_message}, main_status={self.main_status}, sub_status={self.sub_status}, results={self.results}, detailed_results={self.detailed_results}, status_done={self.status_done})"
-
-    def get_status(self, main_status):
-        """Return status.
-
-        Args:
-            status (str): The status message to update
-            main_message (bool): Whether to return main message or sub message
-
-        Returns:
-            str: Formatted status
-        """
-        return self.main_status if main_status else self.sub_status
-
-    def set_status(self, status, main_status=False):
-        """Update the status.
-
-        Args:
-            status (str): The status message to update
-            main_status (bool, optional): Whether it is the main status. Defaults to False.
-        """
-        if not main_status:
-            self.sub_status = status
-        else:
-            self.main_status = status
-
-    def clear_status(self):
-        """Clear all the status message."""
-        self.main_status = ""
-        self.sub_status = ""
+        return f"WebInterface(error_message={self.error_message}, results={self.results}, detailed_results={self.detailed_results})"
 
     def get_error_message(self):
         """Return the error message.
@@ -177,20 +138,39 @@ class WebInterface:
         """Clear all the detailed results."""
         self.detailed_results = []
 
-    def jsonify(self):
-        """Return json response of relevant datas.
+###############################################################################
+############################# ProcessStatus Class #############################
+###############################################################################
 
-        Returns:
-            Json: Contains key(error_message, status, status_done)
+
+class ProcessStatus:
+    def __init__(self) -> None:
+        self.status_done = False
+        self.main_status = ""
+        self.sub_status = ""
+
+    def set_status(self, status, main_status=False):
+        """Update the status.
+
+        Args:
+            status (str): The status message to update
+            main_status (bool, optional): Whether it is the main status. Defaults to False.
         """
-        return jsonify(
-            {
-                "error_message": self.get_error_message(),
-                "main_status": self.get_status(True),
-                "sub_status": self.get_status(False),
-                "status_done": self.status_done,
-            }
-        )
+        if not main_status:
+            self.sub_status = status
+        else:
+            self.main_status = status
+
+    def clear_status(self):
+        """Clear all the status message."""
+        self.main_status = ""
+        self.sub_status = ""
+
+    def jsonify(self):
+        return jsonify({"status_done": self.status_done,
+                        "main_status": self.main_status,
+                        "sub_status": self.sub_status, })
+
 
 ###############################################################################
 ############################## PathsResult Class ##############################
