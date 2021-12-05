@@ -18,7 +18,7 @@
         <th>Path</th>
         <th>Distance/km</th>
       </tr>
-      {% for result in ui.results %}
+      {% for result in ui.get_paths_summary %}
       <tr class="result">
         <td
           onclick="window.location='{{ result.get_path_url() }}'"

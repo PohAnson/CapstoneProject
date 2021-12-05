@@ -1,5 +1,5 @@
 count = 0;
-fetch("/finding_path");
+// fetch("/finding_path");
 gettingApi = window.setInterval(function () {
   fetch("/api/v1/status")
     .then((response) => response.json())
@@ -11,7 +11,7 @@ gettingApi = window.setInterval(function () {
         console.log("finish");
         window.clearInterval(gettingApi);
         console.log("cleared interval");
-        window.location = "/results";
+        window.location = "/paths_summary";
       }
       document.getElementById("main-status").innerText = data["main_status"];
       document.getElementById("sub-status").innerText = data["sub_status"];

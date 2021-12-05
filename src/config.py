@@ -7,8 +7,8 @@ port: the port number of host for flask
 """
 
 # Data Storage
-db_path = "database.db"
-graph_path = "graph.json"
+db_path = "src/datastore/database.db"
+graph_path = "src/graph.json"
 
 # Website
 host = "0.0.0.0"

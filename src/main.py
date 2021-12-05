@@ -73,10 +73,10 @@ def finding_path():
     return redirect("/results")
 
 
-@app.route("/results")
-def results():
+@app.route("/paths_summary")
+def paths_summary():
     """Return the results page."""
-    return render_template("results.html", ui=ui)
+    return render_template("paths_summary.html", ui=ui)
 
 
 @app.route("/path_info")

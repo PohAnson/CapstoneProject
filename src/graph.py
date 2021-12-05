@@ -72,10 +72,12 @@ class Graph:
                 key: bus_stop_code,
                 value: List of destination bus stop code reachable from BusStop
         """
-        if cache and graph_path in os.listdir():
+        # Try to read file from cache
+        if cache and os.path.isfile(graph_path):
             with open(graph_path, "r") as f:
                 self.graph = json.load(f)
             return self.graph
+        print('cache unavailable')
         bus_stops = bu.retrieve_all_bus_stops().keys()
         for bus_stop in bus_stops:
             stops = bu.find_bus_connection(bus_stop)
