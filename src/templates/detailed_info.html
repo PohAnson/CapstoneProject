@@ -13,7 +13,7 @@
       <h2 style="font-size: 1.5em;margin-top: 5px;font-weight: 400;">{{ readable_path }}</h2>
     </div>
     <div class="bus-stop-list">
-      {% for result in ui.get_detailed_path_results() %}
+      {% for result in path_info %}
       <li class="bus-stop-list">
         <ul class="bus-stop-list">
           <div class="bus-stop-item">
