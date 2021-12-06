@@ -1,17 +1,17 @@
 """Functions to help find the path."""
 
-# import datastore as ds
-from sort import OrderedList
 import bus_utils as bu
+from graph import Graph
+from sort import OrderedList
 
 
-def sort_paths(paths, criteria, ui=None):
+def sort_paths(paths, criteria, process_status=None):
     """List of paths to find a bus routes and sort.
 
     Args:
         paths (list): All possible paths to find
         criteria (str): Criteria to sort by in {"dist", "transfer"}
-        ui (WebInterface, optional): WebInterface object to update.
+        process_status (ProcessStatus, optional): process_status to update.
 
     Raises:
         KeyError: The criteria is not valid
@@ -24,9 +24,9 @@ def sort_paths(paths, criteria, ui=None):
     if criteria not in {"dist", "transfer"}:
         raise KeyError("Invalid Criteria")
     results = OrderedList(index=criteria)
-    if ui is not None:
-        ui.clear_status()
-        ui.set_status("Finding bus connections", main_status=True)
+    if process_status is not None:
+        process_status.clear_status()
+        process_status.set_status("Finding bus connections", main_status=True)
 
     for i, path in enumerate(paths):
         service_nos = bu.find_bus_path(path)
@@ -40,33 +40,33 @@ def sort_paths(paths, criteria, ui=None):
                     "transfer": len(service_no),
                 }
             )
-        if ui is not None:
-            ui.set_status(f"Found {i+1}/{len(paths)} bus paths")
-    if ui is not None:
-        ui.clear_status()
-        ui.set_status("Finished finding bus connections.", main_status=True)
+        if process_status is not None:
+            process_status.set_status(f"Found {i+1}/{len(paths)} bus paths")
+    if process_status is not None:
+        process_status.clear_status()
+        process_status.set_status(
+            "Finished finding bus connections.", main_status=True)
     return results
 
 
-def search_path(start_stop_code, end_stop_code, graph, ui=None):
+def search_path(start_stop_code, end_stop_code, graph, process_status=None):
     """Search for all paths between 2 points combination.
 
     Args:
         combinations (list):
             Contains tuple(start_bus_stop_code, end_bus_stop_code)
         graph (Graph): Graph object with a graph
-        ui (WebInterface, optional): The WebInterface object to update.
+        process_status (ProcessStatus, optional): The process_status to update.
 
     Returns:
         list: All the possible paths
     """
-    if ui is not None:
+    if process_status is not None:
         start_info = bu.get_bus_stop_info(start_stop_code)["description"]
         end_info = bu.get_bus_stop_info(end_stop_code)["description"]
-        ui.set_status(
+        process_status.set_status(
             f"Searching for path \
                 {start_info} {chr(0x1f86a)} {end_info}",
             main_status=True,
         )
-    path_lists = graph.search_path(start_stop_code, end_stop_code)
-    return path_lists
+    return graph.search_path(start_stop_code, end_stop_code)

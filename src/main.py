@@ -1,26 +1,25 @@
 """File to start the flask app."""
 from threading import Thread
-from flask import Flask, render_template, request, jsonify
-import bus_utils as bu
-from graph import Graph
-from webui import WebInterface
-from validation import validate_stops
-from pathfinding import sort_paths, search_path
+
+from flask import Flask, jsonify, render_template, request
 from flask_cors import CORS
+
+import bus_utils as bu
+import request as req
 from config import host, port
-from webui import ProcessStatus, WebInterface
+from graph import Graph
+from pathfinding import search_path, sort_paths
+from webui import ProcessStatus
 
 app = Flask(__name__)
 app.secret_key = "098765456789"
 CORS(app)
 
-ui = WebInterface()
-
 
 @app.route("/")
 def root():
     """Return page containing the form."""
-    return render_template("index.html", ui=ui)
+    return render_template("index.html")
 
 
 @app.route("/processing", methods=["POST"])
@@ -28,18 +27,15 @@ def processing():
     """Return a processing page, to show progress updated from the api."""
     global process_status
     process_status = ProcessStatus()
-    ui.clear_error_message()
+    global path_summary_request
+    path_summary_request = req.PathSummaryRequest(request)
 
-    start_stop_code = request.form.get("start_stop_code", None)
-    end_stop_code = request.form.get("end_stop_code", None)
-    criteria = request.form.get("criteria", None)
+    result = path_summary_request.validate()
 
-    Thread(target=finding_path, args=req.to_find_path()).start()
+    Thread(target=finding_path,
+           args=path_summary_request.to_find_path()).start()
 
-    return render_template(
-        "processing.html",
-        ui=ui,
-    )
+    return result.html()
 
 
 def finding_path(start_stop_code,
@@ -56,14 +52,14 @@ def finding_path(start_stop_code,
     paths_summary = sort_paths(
         path_lists, criteria, process_status=process_status)
 
-    ui.set_paths_summary(paths_summary, summarise=True)
+    path_summary_request.set_paths_summary(paths_summary.data, summarise=True)
     process_status.status_done = True
 
 
 @app.route("/paths_summary")
 def paths_summary():
     """Return the results page."""
-    return render_template("paths_summary.html", ui=ui)
+    return path_summary_request.handle().html()
 
 
 @app.route("/path_info")
@@ -73,24 +69,7 @@ def path_info():
     If path is not found, redirect back to home page.
     If distance does not match, return all paths.
     """
-    ui.clear_detailed_path_results()
-    path_list = [request.args.get("path", "").split(" ")]
-    dist = request.args.get("distance", "")
-
-    paths = sort_paths(path_list, "dist")
-    if len(paths) == 0:
-        return redirect("/")
-    ui.set_detailed_path_results([path for path in paths if str(path["dist"]) == dist])
-    if ui.get_detailed_path_results() == []:
-        ui.set_detailed_path_results(paths)
-
-    readable_path = f" {chr(0x1f86a)} ".join(
-        [
-            bu.get_bus_stop_info(stop_code)["description"]
-            for stop_code in paths[0]["path"]
-        ]
-    )
-    return render_template("detailed_info.html", readable_path=readable_path, ui=ui)
+    return req.PathInfoRequest(request).handle().html()
 
 
 @app.route("/api/v1/status")
