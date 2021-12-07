@@ -1,13 +1,12 @@
 """File to start the flask app."""
 from threading import Thread
 
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, render_template, request
 from flask_cors import CORS
 
-import bus_utils as bu
+import config
 import request as req
-from config import host, port
-from graph import Graph
+from Graph import Graph
 from pathfinding import search_path, sort_paths
 from webui import ProcessStatus
 
@@ -40,7 +39,7 @@ def processing():
 
 def finding_path(start_stop_code,
                  end_stop_code,
-                 criteria):
+                 criteria) -> None:
     """Find path, redirects to results when finished."""
 
     graph = Graph()
@@ -80,11 +79,7 @@ def status():
 
 @app.route("/api/v1/allbusstopinfo")
 def info():
-    all_bus_stop_info = list(bu.retrieve_all_bus_stops().values())
-    for i in range(len(all_bus_stop_info)):
-        all_bus_stop_info[i]["id"] = i
-
-    return jsonify(all_bus_stop_info)
+    return req.AllStopInfoRequest(request).handle().jsonify()
 
 
-app.run(host=host, port=port, debug=True)
+app.run(host=config.host, port=config.port, debug=True)

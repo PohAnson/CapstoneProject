@@ -67,6 +67,7 @@ if __name__ == "__main__":
     ds.execute(SQLcmds["create_bus_routes_table"])
 
     bus_stops = read_bus_stops(os.path.sep.join(["datas", "bus_stops.json"]))
-    bus_routes = read_bus_routes(os.path.sep.join(["datas", "bus_routes.json"]))
+    bus_routes = read_bus_routes(
+        os.path.sep.join(["datas", "bus_routes.json"]))
     ds.insert_bus_stops(bus_stops)
     ds.insert_bus_routes(bus_routes)

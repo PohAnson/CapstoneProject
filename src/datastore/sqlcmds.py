@@ -31,9 +31,11 @@ SQLcmds = {
     VALUES (:service_no, :direction, :stop_sequence, :bus_stop_code, :distance );
 """,
     "get_bus_routes": """
-    SELECT * FROM "bus_routes";
+    SELECT bus_stop_code FROM "bus_routes"
+    WHERE service_no=? AND direction=?
+    ORDER BY stop_sequence ASC;
 """,
-    "find_bus_stop_connectivity": """
+    "find_connected_bus_stop": """
     SELECT bus_stop_code FROM "bus_routes"
     WHERE "service_no"=? AND "direction"=? AND "stop_sequence">?;
 """,
@@ -48,6 +50,6 @@ SQLcmds = {
 """,
     "get_bus_stop_info": """
     SELECT * FROM "bus_stops"
-    WHERE "bus_stop_code"=?
+    WHERE "bus_stop_code"=?;
 """,
 }

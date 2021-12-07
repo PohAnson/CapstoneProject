@@ -1,8 +1,9 @@
 """All functionalities to deal with the database."""
 
 import sqlite3
-from datastore.sqlcmds import SQLcmds
-from config import db_path
+
+import config
+from .sqlcmds import SQLcmds
 
 
 def get_connection():
@@ -12,7 +13,7 @@ def get_connection():
     Returns:
         sqlite3.Connection: the connection to the sqlite3 database
     """
-    return sqlite3.connect(db_path)
+    return sqlite3.connect(config.db_path)
 
 
 def execute(cmd, parameters=None):
@@ -98,11 +99,11 @@ def retrieve_all(table_name):
     Returns:
         list: list with elements of dictionary
     """
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(config.db_path)
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
     cur.execute(
-        f"""SELECT * FROM {table_name} ;""",
+        f"""SELECT * FROM {table_name};""",
     )
     result = [dict(row) for row in cur.fetchall()]
 
