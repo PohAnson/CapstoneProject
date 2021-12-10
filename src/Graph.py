@@ -5,7 +5,7 @@ import json
 import os
 
 import config
-from BusClasses import BusStop, retrieve_all_bus_stops
+from bus import BusStop, retrieve_all_bus_stops
 
 
 class Graph:
@@ -137,8 +137,9 @@ class Graph:
         visited = set()
         to_visit = [[start]]
 
-        while to_visit:
+        while to_visit:  # still got paths to check.
             current_path = to_visit.pop(0)
+            cur_path_last_stop = current_path[-1]
 
             # terminate search early when there's a solution and
             # current path has more than 3 transfers.
@@ -146,13 +147,12 @@ class Graph:
                 return solutions
 
             # Check for valid stops in the current path.
-            # Attempt to find connection in case of corrupt data.
-            if current_path[-1] not in self.stops_graph:
-                for stop in current_path[-1].find_bus_connection():
-                    self.insert(current_path[-1], stop)
+            if cur_path_last_stop not in self.stops_graph:
+                # Attempt to find connection in case of corrupt data.
+                self.reconnecting_stop(cur_path_last_stop)
 
             # iterating through each connections
-            for node in self.stops_graph.get(current_path[-1], []):
+            for node in self.stops_graph.get(cur_path_last_stop, []):
                 if node not in visited:
                     to_visit.append(current_path + [node])
                     visited.add(node)
@@ -160,3 +160,12 @@ class Graph:
                     solutions.append(current_path + [node])
 
         return solutions
+
+    def reconnecting_stop(self, origin_stop: BusStop):
+        """Find the connections for a stop.
+
+        Args:
+            origin_stop (BusStop): The stop to find the connection from.
+        """
+        for end_stop in origin_stop.find_bus_connection():
+            self.insert(origin_stop, end_stop)

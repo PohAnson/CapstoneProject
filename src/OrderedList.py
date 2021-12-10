@@ -1,13 +1,13 @@
 """Data structure and Algorithm to help with sorting."""
 
 
-from typing import Iterable, Dict, Sequence, TypeVar
+from typing import Dict, Iterable, Sequence, TypeVar
 
-KT = TypeVar('KT')
-VT = TypeVar('VT', str, int)
+_KT = TypeVar('_KT')
+_VT = TypeVar('_VT', str, int)
 
 
-class OrderedList(Sequence[Dict[KT, VT]]):
+class OrderedList(Sequence[Dict[_KT, _VT]]):
     """
     Ensure that data is always ordered to help insert data quickly
     via binary search.
@@ -15,14 +15,14 @@ class OrderedList(Sequence[Dict[KT, VT]]):
     Contains a list of iterables
     """
 
-    def __init__(self, index: KT) -> None:
+    def __init__(self, index: _KT) -> None:
         """Initialise the list with a criteria to sort by.
 
         Args:
             index (str/int): The index/criteria to sort the list by.
         """
-        self.__data: list[Dict[KT, VT]] = []
-        self.index: KT = index
+        self.__data: list[Dict[_KT, _VT]] = []
+        self.index: _KT = index
 
     def __repr__(self) -> str:
         """
@@ -44,7 +44,7 @@ class OrderedList(Sequence[Dict[KT, VT]]):
         """
         return str(self.__data)
 
-    def __getitem__(self, index: int) -> Dict[KT, VT]:
+    def __getitem__(self, index: int) -> Dict[_KT, _VT]:
         """
         Get item of the OrderedList at a specified index.
 
@@ -62,7 +62,7 @@ class OrderedList(Sequence[Dict[KT, VT]]):
         return len(self.__data)
 
     @ property
-    def data(self) -> list[Dict[KT, VT]]:
+    def data(self) -> list[Dict[_KT, _VT]]:
         return self.__data
 
     @ data.setter
@@ -71,11 +71,11 @@ class OrderedList(Sequence[Dict[KT, VT]]):
         for data in datas:
             self.insert(data)
 
-    def insert(self, value: Dict[KT, VT]) -> None:
+    def insert(self, value: Dict[_KT, _VT]) -> None:
         """Insert value into the list.
 
         Args:
-            value (dict): [description]
+            value (dict): the value to insert into ordered list.
         """
 
         # edge case where data is empty

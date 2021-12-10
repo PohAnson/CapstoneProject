@@ -1,4 +1,4 @@
-from BusClasses import retrieve_all_bus_stops
+from bus import retrieve_all_bus_stops
 from flask import jsonify
 
 from .BaseResults import Result

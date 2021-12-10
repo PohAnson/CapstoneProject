@@ -1,6 +1,6 @@
 from typing import Any
 
-from BusClasses import BusStop
+from bus import BusStop
 from response import PathSummarySuccess, ProcessingSuccess, Result, ResultError
 from validation import validate_stops
 from webui import PathsResult

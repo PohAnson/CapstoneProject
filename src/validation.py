@@ -1,5 +1,5 @@
 """Contains function to carry out validation."""
-from BusClasses import BusStop
+from bus import BusStop
 
 
 def validate_stops(*stops_code: str):

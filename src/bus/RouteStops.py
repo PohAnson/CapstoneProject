@@ -1,57 +1,14 @@
-"""Functions to deal with bus stops and routes."""
-
-from typing import Any, Generic, Type, TypeVar
+from typing import Any, Type
 
 import datastore as ds
-from datastore.sqlcmds import SQLcmds
+from datastore import SQLcmds
+
+from . import Bus
 
 
-class Bus:
-    __created_buses = {}  # (service_no, direction, stop_sequence): Bus
-
-    def __init__(self,
-                 service_no: str,
-                 direction: int,
-                 stop_sequence: int) -> None:
-        self.service_no: str = service_no
-        self.direction: int = direction
-        self.stop_sequence: int = stop_sequence
-
-    def __new__(cls, *args):
-        if args not in cls.__created_buses.keys():
-            cls.__created_buses[args] = object.__new__(cls)
-        return cls.__created_buses[args]
-
-    def __repr__(self) -> str:
-        return ("Bus("
-                f"{self.service_no}, "
-                f"{self.direction}, "
-                f"{self.stop_sequence}, "
-                f"{self.__hash__()}"
-                ")"
-                )
-
-    def __hash__(self) -> int:
-        return hash(self.service_no) // hash(self.direction)
-
-    def __eq__(self, __o: "Bus") -> bool:
-        # Same bus if the service no and direction is same.
-        return (self.service_no == __o.service_no
-                and self.direction == __o.direction)
-
-    # gt, lt compares the stop sequence
-    def __gt__(self, __o):
-        return self.stop_sequence > __o.stop_sequence
-
-    def __lt__(self, __o):
-        return self.stop_sequence < __o.stop_sequence
-
-
-_T = TypeVar("_T", bound="BusStop")
-
-
-class BusStop(Generic[_T]):
-    __created_stops: dict[str, _T] = {}  # stop_code: BusStop
+class BusStop():
+    """BusStop Classes for dealing with bus stop information such as bus_stop_code, road_name, etc."""
+    __created_stops: dict[str, "BusStop"] = {}  # stop_code: BusStop
 
     def __init__(self,
                  bus_stop_code: str,
@@ -65,7 +22,7 @@ class BusStop(Generic[_T]):
         self.latitude = latitude
         self.longitude = longitude
 
-    def __new__(cls: Type[_T], *args, **kwargs) -> _T:
+    def __new__(cls: Type["BusStop"], *args, **kwargs) -> "BusStop":
         if args[0] not in cls.__created_stops.keys():
             cls.__created_stops[args[0]] = object.__new__(cls)
         return cls.__created_stops[args[0]]
@@ -90,7 +47,7 @@ class BusStop(Generic[_T]):
         return attributes[key]
 
     @classmethod
-    def from_record(cls: Type[_T], **kwargs) -> _T:
+    def from_record(cls: Type["BusStop"], **kwargs) -> "BusStop":
         """Create BusStop from record. Should have all the field as kwargs.
 
         Args:
@@ -102,7 +59,7 @@ class BusStop(Generic[_T]):
         return cls(kwargs.pop('bus_stop_code'), **kwargs)
 
     @classmethod
-    def from_bus_code(cls: Type[_T], bus_stop_code: str) -> _T:
+    def from_bus_code(cls: Type["BusStop"], bus_stop_code: str) -> "BusStop":
         """Create BusStop with the data when given a bus_stop_code.
 
         Args:
@@ -165,6 +122,7 @@ class BusStop(Generic[_T]):
 
         Returns:
             list: Contains the list of directly connected bus stops.
+            Returns empty list if none.
         """
 
         conn = ds.get_connection()
@@ -197,6 +155,9 @@ class BusStop(Generic[_T]):
 
 
 class BusRoute:
+    """BusRoute class to deal with the route associated to each service.
+    """
+
     def __init__(self,
                  service_no: str,
                  direction: int,
@@ -222,6 +183,14 @@ class BusRoute:
                 ")")
 
     def has_bus_stop(self, bus_stop: BusStop) -> bool:
+        """Check if bus stop is along the route.
+
+        Args:
+            bus_stop (BusStop): the bus stop to check.
+
+        Returns:
+            bool: true if it is along the route.
+        """
         return any(
             stop == bus_stop
             for stop in self.bus_stops
@@ -249,6 +218,7 @@ class BusRoute:
     def calculate_distance(self) -> float:
         """
         Calculate the total distance of a path, using specific bus services.
+        Must have end_stop and start_stop set.
 
         Returns:
             float: the total distance.
@@ -259,38 +229,3 @@ class BusRoute:
             self.find_dist(self.end_stop)[-1]
             - self.find_dist(self.start_stop)[0]
         )
-
-
-def retrieve_all_bus_stops() -> dict[str, BusStop]:
-    """
-    Get all bus stop datas from the database.
-
-    Returns:
-        dictionary: {bus_stop_code (str): BusStop}
-    """
-    return {
-        data["bus_stop_code"]: BusStop.from_record(**data)
-        for data in ds.retrieve_all("bus_stops")
-    }
-
-
-def find_bus_path(path: list[BusStop]) -> list[list[BusRoute]]:
-    """
-    Find buses connecting a path.
-
-    Args:
-        path (list): list of paths
-
-    Returns:
-        list of list: list contains all possible paths
-    """
-    buses_list = [[]]
-    for i in range(1, len(path)):
-        buses_list.append([])
-        for bus in path[i-1].buses_to(path[i]):
-            if i == 1:
-                buses_list[i].append([bus])
-            else:
-                for buses in buses_list[i - 1]:
-                    buses_list[i].append(buses + [bus])
-    return buses_list[-1]  # the last list in buses_list is the full bus route

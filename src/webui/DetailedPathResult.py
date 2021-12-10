@@ -1,6 +1,6 @@
 # from datastore import SQLcmds
 # import datastore as ds
-from BusClasses import BusStop
+from bus import BusStop
 
 
 class DetailedPathResult:

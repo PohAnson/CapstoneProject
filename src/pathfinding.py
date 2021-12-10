@@ -2,7 +2,7 @@
 
 from typing import Any, Optional
 
-from BusClasses import BusStop, find_bus_path
+from bus import BusStop, find_bus_path
 from OrderedList import OrderedList
 from Graph import Graph
 from webui import ProcessStatus

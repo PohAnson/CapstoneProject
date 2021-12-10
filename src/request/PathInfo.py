@@ -1,6 +1,6 @@
 from typing import Any
 
-from BusClasses import BusStop
+from bus import BusStop
 from pathfinding import sort_paths
 from response import PathInfoSuccess, Result, ResultError
 from webui import DetailedPathResult
