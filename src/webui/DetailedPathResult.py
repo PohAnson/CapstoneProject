@@ -1,5 +1,3 @@
-# from datastore import SQLcmds
-# import datastore as ds
 from bus import BusStop
 
 

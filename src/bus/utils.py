@@ -1,8 +1,10 @@
 """Utilities function to deal with bus."""
 
-import datastore as ds
+from datastore import Datastore
 
 from . import BusRoute, BusStop
+
+ds = Datastore()
 
 
 def find_bus_path(path: list[BusStop]) -> list[list["BusRoute"]]:

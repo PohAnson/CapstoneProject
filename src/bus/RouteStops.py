@@ -1,9 +1,10 @@
 from typing import Any, Type
 
-import datastore as ds
+from datastore import Datastore
 from datastore import SQLcmds
 
 from . import Bus
+ds = Datastore()
 
 
 class BusStop():
@@ -67,21 +68,15 @@ class BusStop():
             bus_stop_code (str): valid bus stop code.
 
         Raises:
-            LookupError: When invalid bus stop code is given
+            LookupError: When invalid bus stop code is given.
 
         Returns:
             BusStop: BusStop instance.
         """
         if bus_stop_code in cls.__created_stops.keys():
             return cls.__created_stops[bus_stop_code]
-        bus_stop_info = ds.execute(
-            SQLcmds["get_bus_stop_info"], (bus_stop_code,))
+        bus_stop_info = ds.get_bus_stop_info(bus_stop_code)
 
-        if len(bus_stop_info) == 0:
-            print(bus_stop_code)
-            raise LookupError("Invalid bus stop")
-
-        bus_stop_info = dict(zip(bus_stop_info[0].keys(), bus_stop_info[0]))
         return cls(
             bus_stop_code,
             bus_stop_info.get("road_name"),
@@ -111,10 +106,8 @@ class BusStop():
             list: list of buses at the bus stop.
         """
         return {Bus(*bus_row)
-                for bus_row in ds.execute(
-            SQLcmds["get_buses_at"], (self.bus_stop_code,)
-        )
-        }
+                for bus_row in ds.get_buses_at(self.bus_stop_code)
+                }
 
     def find_bus_connection(self) -> list["BusStop"]:
         """
@@ -124,7 +117,7 @@ class BusStop():
             list: Contains the list of directly connected bus stops.
             Returns empty list if none.
         """
-
+        # avoid continuously opening and closing connection
         conn = ds.get_connection()
 
         bus_routes = []
@@ -165,11 +158,9 @@ class BusRoute:
                  end_stop: BusStop = None) -> None:
         self.service_no: str = service_no
         self.direction: int = direction
-        self.bus_stops: list[BusStop] = [BusStop.from_bus_code(bus_code[0])
-                                         for bus_code in ds.execute(
-            SQLcmds["get_bus_routes"],
-            (service_no, direction),
-        )
+        self.bus_stops: list[BusStop] = [
+            BusStop.from_bus_code(bus_code)
+            for bus_code in ds.get_bus_routes(service_no, direction)
         ]
         self.start_stop = start_stop
         self.end_stop = end_stop
@@ -207,13 +198,10 @@ class BusRoute:
         Returns:
             list: containing distances ordered by ascending stop sequence
         """
-        return [
-            i[0]
-            for i in ds.execute(
-                SQLcmds["get_distance"],
-                (bus_stop.bus_stop_code, self.service_no, self.direction),
-            )
-        ]
+        return ds.get_distances(
+            bus_stop.bus_stop_code,
+            self.service_no,
+            self.direction)
 
     def calculate_distance(self) -> float:
         """

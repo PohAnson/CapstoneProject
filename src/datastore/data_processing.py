@@ -22,12 +22,14 @@ def read_bus_stops(filepath):
     with open(filepath, "r", newline="") as f:
         bus_stops_data = json.load(f)
         for bus_stop in bus_stops_data:
-            tmp = {}
-            tmp["bus_stop_code"] = bus_stop["BusStopCode"]
-            tmp["road_name"] = bus_stop["RoadName"]
-            tmp["description"] = bus_stop["Description"]
-            tmp["latitude"] = bus_stop["Latitude"]
-            tmp["longitude"] = bus_stop["Longitude"]
+            tmp = {
+                'bus_stop_code': bus_stop["BusStopCode"],
+                'road_name': bus_stop["RoadName"],
+                'description': bus_stop["Description"],
+                'latitude': bus_stop["Latitude"],
+                'longitude': bus_stop["Longitude"],
+            }
+
             datas.append(tmp)
     return datas
 
@@ -47,27 +49,37 @@ def read_bus_routes(filepath):
     with open(filepath, "r") as f:
         bus_routes = json.load(f)
         for bus_route in bus_routes:
-            tmp = {}
-            tmp["service_no"] = bus_route["ServiceNo"]
-            tmp["direction"] = bus_route["Direction"]
-            tmp["stop_sequence"] = bus_route["StopSequence"]
-            tmp["bus_stop_code"] = bus_route["BusStopCode"]
-            tmp["distance"] = bus_route["Distance"]
+            tmp =s {
+                'service_no': bus_route["ServiceNo"],
+                'direction': bus_route["Direction"],
+                'stop_sequence': bus_route["StopSequence"],
+                'bus_stop_code': bus_route["BusStopCode"],
+                'distance': bus_route["Distance"],
+            }
+
             datas.append(tmp)
     return datas
 
 
 if __name__ == "__main__":
-    import datastore as ds
-    from datastore.sqlcmds import SQLcmds
-    ds.execute('Drop table "bus_stops";')
-    ds.execute('drop table "bus_routes"')
+    # so the config files can be found
+    import sys
+    sys.path.append(os.getcwd()+'/src')
 
-    ds.execute(SQLcmds["create_bus_stops_table"])
-    ds.execute(SQLcmds["create_bus_routes_table"])
+    import config
 
-    bus_stops = read_bus_stops(os.path.sep.join(["datas", "bus_stops.json"]))
+    from datastore import Datastore
+
+    ds = Datastore(config.db_path)
+    ds.execute('DROP TABLE IF EXISTS "bus_stops";')
+    ds.execute('DROP TABLE IF EXISTS "bus_routes"')
+
+    ds.create_table('bus_stops')
+    ds.create_table('bus_routes')
+
+    bus_stops = read_bus_stops(os.path.sep.join(
+        ["src", "data", "bus_stops.json"]))
     bus_routes = read_bus_routes(
-        os.path.sep.join(["datas", "bus_routes.json"]))
+        os.path.sep.join(["src", "data", "bus_routes.json"]))
     ds.insert_bus_stops(bus_stops)
     ds.insert_bus_routes(bus_routes)
