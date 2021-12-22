@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from typing import Any
 
 from bus import BusStop
@@ -51,35 +52,37 @@ class PathSummaryRequest(Request):
         """
         if summarise:
 
-            def summarise_data(
-                datas: list[dict[str, Any]]
-            ) -> list[dict[str, Any]]:
-                """Summarise datas. Remove duplicate of same distance & service
-                number AND same distance and path taken.
-
-                Args:
-                    datas (list): contain dictionary with key(sn, path, dist,
-                    transfer)
-
-                Returns:
-                    list: contain dictionary with key(sn, path, dist, transfer)
-                """
-                partial_summary = {}
-                summary = {}
-                data: dict[str, Any]
-                for data in datas:
-                    partial_summary[(tuple(data["sn"]),
-                                     str(["dist"]))] = data
-                item: dict[str, Any]
-                for item in partial_summary.values():
-                    summary[(str(item["dist"]), tuple(item["path"]))] = item
-                summary: dict[tuple, dict[str, Any]]
-                return list(summary.values())
-
-            datas = summarise_data(datas)
-
+            datas = self.summarise_data(datas)
         self.results = [
             PathsResult(data["sn"], data["path"], data["dist"])
             for data in datas
         ]
         return self.results
+
+    @staticmethod
+    def summarise_data(
+        datas: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
+        """Summarise datas. Remove duplicate of same distance & service
+        number AND same distance and path taken.
+
+        Args:
+            datas (list): contain dictionary with key(sn, path, dist,
+            transfer)
+
+        Returns:
+            list: contain dictionary with key(sn, path, dist, transfer)
+        """
+        sn_dist_summary = OrderedDict()
+        data: dict[str, Any]
+        for data in datas:
+            if (tuple(data["sn"]),
+                    str(["dist"])) not in sn_dist_summary.keys():
+                sn_dist_summary[(tuple(data["sn"]),
+                                 str(["dist"]))] = data
+        summary = OrderedDict()
+        item: dict[str, Any]
+        for item in sn_dist_summary.values():
+            if (str(item["dist"]), tuple(item["path"])) not in summary.keys():
+                summary[(str(item["dist"]), tuple(item["path"]))] = item
+        return list(summary.values())
