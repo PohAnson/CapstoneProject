@@ -5,17 +5,27 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bus Route Finder</title>
+    <!-- fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Symbols+2&family=Open+Sans&display=swap"
+      rel="stylesheet"
+    />
+
     <link rel="stylesheet" href="/static/styles.css" />
   </head>
   <body style="display: flex; align-items: center; flex-direction: column">
     <div class="header">
-      <h1 style="margin: 10px;">Detailed Information on</h1>
-      <h2 style="font-size: 1.5em;margin-top: 5px;font-weight: 400;">{{ readable_path }}</h2>
+      <h1 style="margin: 10px">Detailed Information on</h1>
+      <h2 style="font-size: 1.5em; margin: 5px 20px; font-weight: 400">
+        {{ readable_path }}
+      </h2>
     </div>
     <div class="bus-stop-list">
-      {% for result in path_info %}
-      <li class="bus-stop-list">
-        <ul class="bus-stop-list">
+      <ul class="bus-stop-list">
+        {% for result in path_info %}
+        <li class="bus-stop-list">
           <div class="bus-stop-item">
             <p class="bus-stop-description">
               {{ result.get_bus_stop_readable() }} {{
@@ -25,10 +35,10 @@
               {{ result.get_road_name_readable() }}
             </p>
           </div>
-          <p style="margin-left: 20px;">{{ result.get_service_readable() }}</p>
-        </ul>
+          <p style="margin-left: 20px">{{ result.get_service_readable() }}</p>
+        </li>
         {% endfor %}
-      </li>
+      </ul>
     </div>
   </body>
 </html>

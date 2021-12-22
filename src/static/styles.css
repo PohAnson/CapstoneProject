@@ -1,5 +1,6 @@
 html {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Open Sans", "Noto Sans Symbols 2", "Segoe UI", Tahoma, Geneva,
+    Verdana, sans-serif;
 }
 body {
   display: flex;
@@ -13,7 +14,7 @@ h1 {
   margin-top: 25px;
 }
 div.header {
-  padding: 0px 0px 2.5vw;
+  padding-bottom: 1vh;
   background-color: #def3fd;
   width: 100vw;
   text-align: center;
@@ -45,68 +46,39 @@ input[type="radio"] {
   padding-left: 25px;
   min-width: 5px;
 }
-table,
 th,
 td {
   border: 2px solid black;
-  border-collapse: collapse;
   padding: 10px 15px;
-  margin: 25px;
+}
+table {
+  margin: 10px;
+  border-collapse: collapse;
 }
 
 tr.result:hover,
 tr.result:focus-within {
   background: #f2f3ff;
 }
-
-select {
-  margin: 0px;
-  width: 50vw;
-  height: 40vh;
-  overflow: auto;
-  display: none;
-}
 /* input[type="submit"] */
- .button {
+.button {
   display: inline-block;
   padding: 8px;
   border-radius: 5px;
   background-color: #007bff;
   color: white;
   border: 0px;
-  min-width: 6vw
+  min-width: 6vw;
 }
-.button:hover{
+.button:hover {
   background-color: #0253aa;
   color: white;
 }
-
 
 .error_msg {
   color: red;
   display: inline;
   margin-left: 10px;
-}
-
-
-
-.show {
-  display: block;
-  flex-direction: column;
-}
-div.o {
-  margin: 1px 0px;
-  border-top: 1px solid black;
-  border-left: 1px solid black;
-  padding-left: 10px;
-}
-p.o {
-  margin: 8px 0px 2px;
-  font-weight: 700;
-}
-
-span.o {
-  color: rgb(110, 110, 110);
 }
 
 *[class^="bus-stop-"] {
@@ -124,4 +96,17 @@ div.bus-stop-list {
 }
 .bus-stop-road-name {
   color: rgb(107, 107, 107);
+}
+
+.autosuggestion-list {
+  list-style: none;
+  padding: 0;
+  margin: 2px;
+  border: 1px solid black;
+  display: none;
+}
+
+.autosuggestion-item {
+  padding: 8px 4px;
+  border: 1px solid whitesmoke;
 }

@@ -5,43 +5,53 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bus Route Finder</title>
+    <!-- fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Symbols+2&family=Open+Sans&display=swap"
+      rel="stylesheet"
+    />
+
     <link rel="stylesheet" href="/static/styles.css" />
   </head>
   <body>
     <div class="header">
       <h1>Possible paths</h1>
     </div>
-    <h2>Click for more information</h2>
-    <table>
-      <tr>
-        <th>Service</th>
-        <th>Path</th>
-        <th>Distance/km</th>
-      </tr>
-      {% for result in path_summary %}
-      <tr class="result">
-        <td
-          onclick="window.location='{{ result.get_path_url() }}'"
-          class="row-link"
-        >
-          {{ result.get_service_readable() }}
-        </td>
-        <td
-          onclick="window.location='{{ result.get_path_url() }}'"
-          tabindex="-1"
-          class="row-link"
-        >
-          {{ result.get_path_readable() }}
-        </td>
-        <td
-          onclick="window.location='{{ result.get_path_url() }}'"
-          tabindex="-1"
-          class="row-link"
-        >
-          {{ result.get_distance_readable() }}
-        </td>
-      </tr>
-      {% endfor %}
-    </table>
+    <h2 style="padding-left: 10px;">Click for more information</h2>
+    <div style="max-width: 100vw; overflow-x: scroll;">
+      <table>
+        <tr>
+          <th>Service</th>
+          <th>Path</th>
+          <th>Distance/km</th>
+        </tr>
+        {% for result in path_summary %}
+        <tr class="result">
+          <td
+            onclick="window.location='{{ result.get_path_url() }}'"
+            class="row-link"
+          >
+            {{ result.get_service_readable() }}
+          </td>
+          <td
+            onclick="window.location='{{ result.get_path_url() }}'"
+            tabindex="-1"
+            class="row-link"
+          >
+            {{ result.get_path_readable() }}
+          </td>
+          <td
+            onclick="window.location='{{ result.get_path_url() }}'"
+            tabindex="-1"
+            class="row-link"
+          >
+            {{ result.get_distance_readable() }}
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
   </body>
 </html>

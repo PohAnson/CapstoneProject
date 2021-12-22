@@ -5,6 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bus Route Finder</title>
+    <!-- fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Symbols+2&family=Open+Sans&display=swap"
+      rel="stylesheet"
+    />
+
     <link rel="stylesheet" href="/static/styles.css" />
     <script src="/static/js/MiniSearch.js"></script>
     <script src="/static/js/index.js"></script>
@@ -12,14 +20,15 @@
   <body>
     <div class="header">
       <h1 style="margin-bottom: 10px">Bus Route Advisory</h1>
-      <p style="font-size: max(10px, 2vw)">
+      <p style="font-size: max(14px, 2vw)">
         Shows the possible route and distance from a stop
       </p>
     </div>
     <p style="color: red; font-size: large"></p>
-
+    <p>Type in field to search</p>
     <form id="form" action="/processing" method="POST">
       <div class="form-table">
+        <!-- START -->
         <div class="row">
           <label class="field_heading" for="start_stop_code"
             >Starting Bus Stop Code:</label
@@ -27,37 +36,54 @@
           <input
             id="start_stop_code"
             name="start_stop_code"
-            onblur="showCode('start_stop_code')"
+            onclick="displayList('start')"
+            onblur="showCode('start')"
+            oninput="inputChange('start')"
           />
           <p style="display: inline; padding-left: 10px"></p>
+          <ul id="start-autosuggestion-list" class="autosuggestion-list"></ul>
         </div>
+        <!-- END -->
         <div class="row">
           <label class="field_heading" for="end_stop_code"
-            >Ending Bus Stop Code:</label
+          >Ending Bus Stop Code:</label
           >
           <input
-            id="end_stop_code"
-            name="end_stop_code"
-            onblur="showCode('end_stop_code')"
+          id="end_stop_code"
+          name="end_stop_code"
+          onclick="displayList('end')"
+          onblur="showCode('end')"
+          oninput="inputChange('end')"
           />
           <p style="display: inline; padding-left: 10px"></p>
+          <ul id="end-autosuggestion-list" class="autosuggestion-list"></ul>
         </div>
         <br />
+        <!-- CRITERIA -->
         <div class="row">
           <p class="field_heading">Criteria:</p>
-          <input
-            type="radio"
-            name="criteria"
-            id="least_transfer"
-            value="transfer"
-          /><label for="least_transfer">Least Transfer</label
-          ><input
-            type="radio"
-            name="criteria"
-            id="least_distance"
-            value="dist"
-            required
-          /><label for="least_distance">Least Distance</label>
+          <div style="display: flex">
+            <div>
+              <input
+                type="radio"
+                name="criteria"
+                id="least_transfer"
+                value="transfer"
+              />
+              <label for="least_transfer">Least Transfer</label>
+            </div>
+
+            <div>
+              <input
+                type="radio"
+                name="criteria"
+                id="least_distance"
+                value="dist"
+                required
+              />
+              <label for="least_distance">Least Distance</label>
+            </div>
+          </div>
         </div>
         <br />
       </div>
